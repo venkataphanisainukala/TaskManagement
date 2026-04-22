@@ -1,12 +1,15 @@
 ﻿using DAL.Entity;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 using System.Data;
 
 namespace DAL
 {
-    public class RoleDAL
+    public class RoleDAL:BaseDAL
     {
-        string ConString = @"Server=LAPTOP-VMGA5TK0;Database=TASK_MANAGEMENT;Integrated Security=True;TrustServerCertificate=True;";
+        public RoleDAL(IConfiguration configuration) : base(configuration)
+        {
+        }
 
         #region Create
 
@@ -82,7 +85,7 @@ namespace DAL
                 Direction = ParameterDirection.Output,
             };
 
-            using (SqlConnection connection = new SqlConnection(ConString))
+            using (var connection = CreateConnection())
             {
                 using (var command = connection.CreateCommand())
 
@@ -122,5 +125,6 @@ namespace DAL
         }
 
         #endregion
+
     }
 }

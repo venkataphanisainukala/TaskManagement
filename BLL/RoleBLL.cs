@@ -1,5 +1,6 @@
 ﻿using DAL;
 using DAL.Entity;
+using Microsoft.Extensions.Configuration;
 
 namespace BLL
 {
@@ -7,9 +8,9 @@ namespace BLL
     {
         public RoleDAL roleDAL;
 
-        public RoleBLL()
+        public RoleBLL(IConfiguration configuration)
         {
-            roleDAL = new RoleDAL();
+            roleDAL = new RoleDAL(configuration);
         }
 
         public int Create(Role role)

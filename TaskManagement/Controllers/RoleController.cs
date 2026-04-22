@@ -10,12 +10,16 @@ namespace TaskManagement.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
+    // This controller class is a class that should have Controller in the suffix of class name and should inherit from ControllerBase class. 
+    //if we say this is a API controller then we should have ApiController attribute on top of the class and also APICOntroller attribute is used to make sure that the controller is used for API and it also provides some default behavior for API controllers such as automatic model validation and automatic response formatting.
     public class RoleController : ControllerBase
     {
         public RoleBLL roleBLL;
-        public RoleController()
+
+        public RoleController(IConfiguration configuration)
         {
-            this.roleBLL = new RoleBLL();
+            this.roleBLL = new RoleBLL(configuration);
         }
 
         #region Save
@@ -25,12 +29,14 @@ namespace TaskManagement.Controllers
         /// </summary>
         /// <param name="roleSaveRequest"></param>
         /// <returns></returns>
-        [Route("Save")]
-        [HttpPost]
+        [Route("Save")]//Route attribute is used to specify the route for the action method. In this case, it is used to specify that the action method should be invoked for requests that match the route "api/Role/Save".Attribute Routing
+        [HttpPost]//HttpVerb attribute is used to specify the HTTP verb for the action method. In this case, it is used to specify that the action method should be invoked for HTTP POST requests.
+
         public ApiResponse Save(RoleSaveRequest roleSaveRequest)
         {
-            ApiResponse apiResponse=null;
-
+             ApiResponse apiResponse=null;
+            //id and name expected RoleSave Requqest
+            //role created ,createdDate,createdBy,updatedDate,updatedBy but we dont this
             Role role = new Role()
             {
                 Id= roleSaveRequest.Id,
