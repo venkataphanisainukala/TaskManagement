@@ -5,10 +5,9 @@ using TaskManagement.Response;
 
 namespace TaskManagement.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     public class BaseController : ControllerBase
     {
+        [NonAction]
         protected ApiResponse CreateSuccessResponse(object response,HttpStatusCode httpStatusCode=HttpStatusCode.OK, string message = "Success")
         {
             return new ApiResponse()
@@ -16,6 +15,18 @@ namespace TaskManagement.Controllers
                 Response = response,
                 Message = message,
                 Status = true,
+                StatusCode = (int)httpStatusCode
+            };
+        }
+
+        [NonAction]
+        protected ApiResponse CreateFailedResponse(object response, HttpStatusCode httpStatusCode = HttpStatusCode.InternalServerError, string errorMessage = "Failed")
+        {
+            return new ApiResponse()
+            {
+                Response = response,
+                ErrorMessage = errorMessage,
+                Status = false,
                 StatusCode = (int)httpStatusCode
             };
         }

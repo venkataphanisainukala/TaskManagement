@@ -13,7 +13,7 @@ namespace TaskManagement.Controllers
 
     // This controller class is a class that should have Controller in the suffix of class name and should inherit from ControllerBase class. 
     //if we say this is a API controller then we should have ApiController attribute on top of the class and also APICOntroller attribute is used to make sure that the controller is used for API and it also provides some default behavior for API controllers such as automatic model validation and automatic response formatting.
-    public class RoleController : ControllerBase
+    public class RoleController : BaseController
     {
         public RoleBLL roleBLL;
 
@@ -34,47 +34,96 @@ namespace TaskManagement.Controllers
 
         public ApiResponse Save(RoleSaveRequest roleSaveRequest)
         {
-             ApiResponse apiResponse=null;
+            ApiResponse apiResponse = null;
             //id and name expected RoleSave Requqest
             //role created ,createdDate,createdBy,updatedDate,updatedBy but we dont this
             Role role = new Role()
             {
-                Id= roleSaveRequest.Id,
-                Name= roleSaveRequest.Name,
-                CreatedBy=1
+                Id = roleSaveRequest.Id,
+                Name = roleSaveRequest.Name,
+                CreatedBy = 1
             };
-         
 
-            int result= roleBLL.Create(role);
-            if (result == 0) 
+
+            int result = roleBLL.Create(role);
+            if (result == 0)
             {
-                apiResponse = new ApiResponse()
-                {
-                    Message = role.Id==0?"Role Created Successfully": "Role Updated Successfully",
-                    Status = true,
-                    StatusCode = (int)HttpStatusCode.OK,
-                    Response= result
-                };  
+                apiResponse = CreateSuccessResponse(result, HttpStatusCode.Created, "RoleCreated Successfully");
             }
-            else if(result == 1)
+            else if (result == 1)
             {
-                apiResponse = new ApiResponse()
-                {
-                    ErrorMessage = "Already Exist",
-                    Status = false,
-                    StatusCode = (int)HttpStatusCode.Ambiguous,
-                    Response = result
-                };
+                apiResponse = CreateFailedResponse(result, HttpStatusCode.Ambiguous, "Role Already Exists");
             }
             else
             {
-                apiResponse = new ApiResponse()
+                apiResponse = CreateFailedResponse(result);
+            }
+            return apiResponse;
+        }
+
+        #endregion
+
+        #region GetById
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Route("GetById")]//Route attribute is used to specify the route for the action method. In this case, it is used to specify that the action method should be invoked for requests that match the route "api/Role/Save".Attribute Routing
+        [HttpGet]//HttpVerb attribute is used to specify the HTTP verb for the action method. In this case, it is used to specify that the action method should be invoked for HTTP POST requests.
+
+        public ApiResponse GetById(int id)
+        {
+            ApiResponse apiResponse = null;
+            //id and name expected RoleSave Requqest
+            //role created ,createdDate,createdBy,updatedDate,updatedBy but we dont this
+
+
+            var result = roleBLL.GetById(id);
+
+            if (result != null)
+            {
+                RoleResponse roleResponse = new RoleResponse()
                 {
-                    ErrorMessage = "Internal server error occurred",
-                    Status = false,
-                    StatusCode = (int)HttpStatusCode.InternalServerError,
-                    Response = result
+                    Id = result.Id,
+                    Name = result.Name
                 };
+                apiResponse = CreateSuccessResponse(roleResponse);
+            }
+            else
+            {
+                apiResponse = CreateFailedResponse(result, HttpStatusCode.NotFound);
+            }
+            return apiResponse;
+        }
+
+        #endregion
+
+
+        #region GetList
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Route("GetList")]//Route attribute is used to specify the route for the action method. In this case, it is used to specify that the action method should be invoked for requests that match the route "api/Role/Save".Attribute Routing
+        [HttpGet]//HttpVerb attribute is used to specify the HTTP verb for the action method. In this case, it is used to specify that the action method should be invoked for HTTP POST requests.
+
+        public ApiResponse GetList([FromQuery]SortWithPageParameters sortWithPageParameters)
+        {
+            ApiResponse apiResponse = null;
+
+            var result = roleBLL.GetList(sortWithPageParameters);
+
+            if (result != null && result.Roles.Count>0)
+            {
+                apiResponse = CreateSuccessResponse(result);
+            }
+            else
+            {
+                apiResponse = CreateFailedResponse(result, HttpStatusCode.NotFound);
             }
             return apiResponse;
         }

@@ -5,6 +5,7 @@ namespace TaskManagement
     {
         public static void Main(string[] args)
         {
+            // this is the entry point of the application. It sets up the web application, configures services, and defines the HTTP request pipeline.
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.

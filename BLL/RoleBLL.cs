@@ -17,5 +17,15 @@ namespace BLL
         {
             return roleDAL.Create(role);
         }
+
+        public Role GetById(int id)
+        {
+            return roleDAL.GetById(id);
+        }
+
+        public RoleList GetList(SortWithPageParameters sortWithPageParameters)
+        {
+            return roleDAL.GetList(sortWithPageParameters);
+        }
     }
 }
